@@ -1,9 +1,10 @@
 from rest_framework import viewsets, status
-from rest_framework.status import  HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from .serializers import ClassesSerializer, StudentsSerializer
 from .models import Classes, Student
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 import os
 
 
@@ -58,25 +59,14 @@ class StudentsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class UserDocAdminViewSet(viewsets.ModelViewSet):
+class StudentFileUploadAV(APIView):
     serializer_class = StudentsSerializer
     queryset = Student
 
-    def list(self, request):
-        print("************************list****************************************")
-        return Response({"detail": "item updated update"}, status=status.HTTP_205_RESET_CONTENT)
-
-    def retrieve(self, reqest, pk=None):
-        print("***********************************partial_update*****************************")
-        return Response({"detail": "item retrieve ", 'pk': pk}, status=status.HTTP_205_RESET_CONTENT)
-
-    @action(detail=False, methods=['PATCH'])
-    def file_update(self, request):
-
+    def patch(self, request):
         # pk = self.kwargs.get('pk')
         # if pk is None:
         #     return Response({"message": "Invalid request"}, status=HTTP_400_BAD_REQUEST)
-
         student_id = self.request.query_params.get('student_id', None)
         type = self.request.query_params.get('type', None)
         model = Student.objects.get(pk=student_id)
@@ -84,8 +74,7 @@ class UserDocAdminViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             if type == 'student_pic':
-                if StudentsSerializer.is_valid():
-                    return upload_student_pic(request, model)
+                return upload_student_pic(request, model)
             elif type == 'parent_pic':
                 return upload_parent_pic(request, model)
             elif type == 'student_doc_pdf':
@@ -96,8 +85,7 @@ class UserDocAdminViewSet(viewsets.ModelViewSet):
                 return Response({"message": 'enter invalid type'}, status=HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['DELETE'])
-    def file_delete(self, request):
+    def delete(self, request):
         student_id = self.request.query_params.get('student_id', None)
         type = self.request.query_params.get('type', None)
         model = Student.objects.get(pk=student_id)
@@ -147,16 +135,6 @@ class UserDocAdminViewSet(viewsets.ModelViewSet):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'msg': 'delete successfully'})
-
-
-def delete_student_pic(model):
-    try:
-        os.remove(model.student_pic.path)
-        model.student_pic = ""
-        model.save()
-        return Response({'msg': 'delete successfully'})
-    except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 ''''************ STUDENT UPLOAD PROFILE PIC ****************'''
@@ -260,7 +238,6 @@ def saveStudentDocPdf(model, request):
 def saveParentDocPdf(model, request):
     model.parent_doc_pdf = request.FILES['parent_doc_pdf']
     model.save()
-
 
 # def get_queryset(self):
 #     # cid = self.request.query_params.get('id')

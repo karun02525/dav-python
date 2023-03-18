@@ -12,7 +12,7 @@ class BaseModel(models.Model):
         abstract = True
 
 
-def get_file_path(filename):
+def get_file_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join('documents/', filename)
@@ -54,7 +54,7 @@ class Teacher(BaseModel):
     teacher_doc_type = models.CharField(max_length=15, choices=DOC_TYPE, blank=True)
     teacher_doc_no = models.CharField(max_length=15, blank=True)
     teacher_pic = models.ImageField(upload_to=get_file_path, blank=True, null=True,
-                                    validators=[FileExtensionValidator(allowed_extensions=['png', 'jpeg', 'jgg'])])
+                                    validators=[FileExtensionValidator(allowed_extensions=['png', 'jpeg', 'jpg'])])
 
     teacher_doc_pdf = models.FileField(upload_to=get_file_path, blank=True, null=True,
                                        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'docx'])])
