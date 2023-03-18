@@ -2,8 +2,6 @@ from django.core.validators import RegexValidator, MaxLengthValidator, FileExten
 from django.db import models
 import uuid
 from rest_framework import serializers
-from django.core.exceptions import ValidationError
-
 import os
 
 
