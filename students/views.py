@@ -1,4 +1,6 @@
 from rest_framework import viewsets, status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from .serializers import ClassesSerializer, StudentsSerializer
 from .models import Classes, Student
@@ -45,15 +47,19 @@ class ClassesViewSet(viewsets.ModelViewSet):
 
 
 class StudentsViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = StudentsSerializer
     queryset = Student
 
     def list(self, request, *args, **kwargs):
         queryset = Student.objects.all()
         serializer = StudentsSerializer(queryset, many=True)
+        print('*************************',request.user)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
+        print('*************************', request.user)
         queryset = Student.objects.filter(stud_id=pk)
         serializer = StudentsSerializer(queryset, many=True)
         return Response(serializer.data)
