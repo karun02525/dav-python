@@ -7,8 +7,9 @@ class Util:
     def send_email(data):
         email = EmailMessage(
             subject=data['subject'],
-            body=data['boby'],
+            body=data['body'],
             from_email=os.environ.get('EMAIL_FROM'),
             to=[data['to_email']]
         )
+        print(data)
         email.send()
