@@ -10,22 +10,22 @@ from .utils import Util
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'password', 'password2', 'tc']
+        fields = ['id', 'email', 'mobile', 'first_name', 'last_name', 'user_type', 'password', 'user_verified']
         extra_kwargs = {
             'password': {'write_only': True}
         }
 
-    def validate(self, attrs):
-        password = attrs.get('password')
-        password2 = attrs.get('password2')
-        if password != password2:
-            raise serializers.ValidationError("password and confirm password doesn't match")
-        return attrs
-
+    # def validate(self, attrs):
+    #     password = attrs.get('password')
+    #     password2 = attrs.get('password2')
+    #     if password != password2:
+    #         raise serializers.ValidationError("password and confirm password doesn't match")
+    #     return attrs
+    #
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 

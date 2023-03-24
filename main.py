@@ -5,8 +5,10 @@
 
 
 def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+    a = [19, 12, 87]
+    a.append(56)
+    a.extend('karun')
+    print(a)
 
 
 # Press the green button in the gutter to run the script.

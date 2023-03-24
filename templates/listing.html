@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2> Movies</h2>
+  <ul>
+    {% for movie in movies %}
+      <li>
+        #{{forloop.counter}} {{movie.0}} was released in {{movie.1}}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h2> Goodies </h2>
+  <ul>
+    {% for goodie in confectionaries %}
+      <li> {{goodie.0}} &mdash; ${{goodie.1}}</li>
+    {% empty %}
+      <li> <i>There are no goodies available</i> </li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

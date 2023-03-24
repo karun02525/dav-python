@@ -4,18 +4,21 @@ from .models import User
 
 
 class UserModelAdmin(BaseUserAdmin):
-    list_display = ('email', 'name', 'tc', 'is_admin')
-    list_filter = ('is_admin',)
+    list_display = (
+        'id', 'first_name', 'last_name', 'email', 'mobile', 'user_type', 'user_verified', 'is_active', 'password',)
+    list_filter = ('email',)
     fieldsets = (
         ('User Credentials', {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('name', 'tc')}),
+        (
+            'Personal info',
+            {'fields': ('first_name', 'last_name', 'mobile', 'user_type', 'user_verified', 'is_active',)}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'name', 'tc', 'password1', 'password2'),
+            'fields': ('email', 'first_name', 'last_name', 'mobile', 'user_type', 'user_verified', 'is_active'),
         }),
     )
     search_fields = ('email',)
@@ -24,4 +27,3 @@ class UserModelAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserModelAdmin)
-

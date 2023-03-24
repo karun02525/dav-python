@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import (UserRegisterSerializer, UserLoginSerializer, UserProfileSerializer,
-                          UserChangePasswordSerializer, SendPasswordResetEmailSerializer,UserPasswordResetSerializer)
+                          UserChangePasswordSerializer, SendPasswordResetEmailSerializer, UserPasswordResetSerializer)
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth import authenticate
@@ -57,21 +57,32 @@ class UserLoginView(APIView):
         serializer = UserLoginSerializer(data=data)
         if not serializer.is_valid(raise_exception=True):
             print(serializer.errors)
-            return Response({'status': 403, 'errors': serializer.errors, 'mess': 'something went wrong'})
+            return Response({'status': 404, 'errors': serializer.errors, 'mess': 'something went wrong'})
 
         email = serializer.data.get('email')
         password = serializer.data.get('password')
         user = authenticate(email=email, password=password)
         if user is not None:
             token = get_tokens_for_user(user)
+            payload = {'name': user.first_name + " " + user.last_name, 'email': user.email, 'mobile': user.mobile,
+                       'user_type': user.user_type, 'user_verified': user.user_verified},
             return Response({'status': 200,
                              'message': 'login successfully',
-                             'payload': {'name': str(user.name), 'email': str(user)},
+                             'payload': payload,
                              'token': token},
                             status=status.HTTP_200_OK)
         else:
             return Response({'errors': {'non_field_errors': ['Email or password is not valid']}},
                             status=status.HTTP_404_NOT_FOUND)
+
+
+class UserLogoutView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        status = request.user.auth_token.delete()
+        return Response({'status': 404, 'mess': 'logout successfully delete'})
 
 
 class UserProfileView(APIView):
