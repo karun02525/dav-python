@@ -9,9 +9,6 @@ from django.forms.models import model_to_dict
 
 
 class AssignRollNoSerializer(serializers.ModelSerializer):
-    student = StudentsSerializer(many=False, read_only=True)
-    classes = ClassesSerializer(many=False, read_only=True)
-
     class Meta:
         model = AssignRollNoModel
         fields = '__all__'

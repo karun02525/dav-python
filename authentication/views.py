@@ -15,6 +15,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth import authenticate
 from .renderers import UserRenderer
+from students.models import Student
+from students.serializers import StudentsSerializer
 
 
 #
@@ -62,15 +64,26 @@ class UserLoginView(APIView):
         email = serializer.data.get('email')
         password = serializer.data.get('password')
         user = authenticate(email=email, password=password)
+
         if user is not None:
-            token = get_tokens_for_user(user)
-            payload = {'name': user.first_name + " " + user.last_name, 'email': user.email, 'mobile': user.mobile,
-                       'user_type': user.user_type, 'user_verified': user.user_verified},
-            return Response({'status': 200,
-                             'message': 'login successfully',
-                             'payload': payload,
-                             'token': token},
-                            status=status.HTTP_200_OK)
+            if user.user_verified:
+                token = get_tokens_for_user(user)
+                queryset = Student.objects.filter(parent_email=user.email)
+                serializer = StudentsSerializer(queryset, many=True)
+                student_data = serializer.data
+
+                payload = {'name': user.first_name + " " + user.last_name, 'email': user.email, 'mobile': user.mobile,
+                           'user_type': user.user_type, 'user_verified': user.user_verified},
+                return Response({'status': True,
+                                 'user_verified': True,
+                                 'message': 'login successfully',
+                                 'payload': payload,
+                                 'student': student_data,
+                                 'token': token},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({'status': True, 'message': 'your account has been de-activated please contact admin',
+                                 'user_verified': False}, status=status.HTTP_200_OK)
         else:
             return Response({'errors': {'non_field_errors': ['Email or password is not valid']}},
                             status=status.HTTP_404_NOT_FOUND)

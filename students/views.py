@@ -60,10 +60,12 @@ class StudentsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        print('*************************', request.user)
-        queryset = Student.objects.filter(student_id=pk)
-        serializer = StudentsSerializer(queryset, many=True)
-        return Response(serializer.data)
+        queryset = Student.objects.get(student_id=pk)
+        serializer = StudentsSerializer(queryset)
+
+        return Response({'status': True,
+                         'message': 'student details successfully',
+                         'data': serializer.data}, status=status.HTTP_200_OK)
 
 
 class StudentFileUploadAV(APIView):

@@ -2,13 +2,18 @@
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import requests
+import json
 
 
 def print_hi(name):
-    a = [19, 12, 87]
-    a.append(56)
-    a.extend('karun')
-    print(a)
+    req = requests.get('https://api.postalpincode.in/pincode/821108')
+    res = req.json()
+    for item in res:
+        print(item['Message'])
+        print(item['Status'])
+        for i in item['PostOffice']:
+            print(i['Name'] + " " + i['Block'])
 
 
 # Press the green button in the gutter to run the script.

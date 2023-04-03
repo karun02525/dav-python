@@ -5,6 +5,22 @@
     <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
+  <component name="DBNavigator.Project.DataExportManager">
+    <export-instructions>
+      <create-header value="true" />
+      <friendly-headers value="false" />
+      <quote-values-containing-separator value="true" />
+      <quote-all-values value="false" />
+      <value-separator value="" />
+      <file-name value="" />
+      <file-location value="" />
+      <scope value="GLOBAL" />
+      <destination value="FILE" />
+      <format value="EXCEL" />
+      <charset value="UTF-8" />
+      <charset value="UTF-8" />
+    </export-instructions>
+  </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
     <autoscroll-to-editor value="true" />
     <autoscroll-from-editor value="true" />
@@ -66,10 +82,6 @@ from
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
-  </component>
-  <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="6e8e2618-4500-4f13-b3fc-f9bc896f8130" dataset="main.auth_user" active-filter-id="" />
-    <filter-actions connection-id="6e8e2618-4500-4f13-b3fc-f9bc896f8130" dataset="main.students_student" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />

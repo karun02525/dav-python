@@ -19,7 +19,7 @@ class Classes(BaseModel):
     class_name = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
-        return self.class_name
+        return self.class_name + "=> " + str(self.class_id)
 
 
 def address_validation(value):
@@ -48,6 +48,12 @@ class Student(BaseModel):
         ('other', 'Other'),
     )
 
+    STATE = (
+        ('bihar', 'Bihar'),
+        ('up', 'UP'),
+        ('jh', 'Jharkhand'),
+    )
+
     DOC_TYPE = (
         ('pan', 'PAN Card'),
         ('aadhar', 'Aadhar Card'),
@@ -57,30 +63,32 @@ class Student(BaseModel):
     )
 
     student_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    first_name = models.CharField(max_length=10, blank=True)
-    last_name = models.CharField(max_length=10, blank=True)
-    mobile = models.CharField(max_length=10, unique=True, blank=True,
+    roll_no = models.PositiveIntegerField(default=0)
+    classes = models.ForeignKey(Classes, on_delete=models.CASCADE, related_name="classes", default=None, null=True)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    mobile = models.CharField(max_length=10, unique=True,
                               validators=[RegexValidator('^[0-9]{10}$', 'Invalid mobile no')], )
-    email = models.EmailField(max_length=30, unique=True, blank=True)
-    dob = models.DateField(blank=True, default='2023-03-17')
-    gender = models.CharField(max_length=6, choices=GENDER, blank=True)
-    blood_group = models.CharField(max_length=6, blank=True)
-    address = models.TextField(validators=[MaxLengthValidator(50)], blank=True)
-    state = models.CharField(max_length=10, blank=True)
-    dist = models.CharField(max_length=10, blank=True)
-    pincode = models.CharField(max_length=6, blank=True,
+    email = models.EmailField(max_length=30, unique=True)
+    dob = models.DateField(default='2023-03-17')
+    gender = models.CharField(max_length=6, choices=GENDER)
+    blood_group = models.CharField(max_length=6, )
+    address = models.TextField(validators=[MaxLengthValidator(50)], )
+    state = models.CharField(max_length=10, choices=STATE)
+    dist = models.CharField(max_length=10)
+    pincode = models.CharField(max_length=6,
                                validators=[RegexValidator('^[0-9]{6}$', 'Invalid postal code')])
-    parent_mobile = models.CharField(max_length=10, blank=True,
+    parent_mobile = models.CharField(max_length=10,
                                      validators=[RegexValidator('^[0-9]{10}$', 'Invalid mobile no')])
-    parent_email = models.EmailField(max_length=30, blank=True)
-    father_name = models.CharField(max_length=30, blank=True)
-    mother_name = models.CharField(max_length=30, blank=True)
-    father_occupation = models.CharField(max_length=30, blank=True)
-    mother_occupation = models.CharField(max_length=30, blank=True)
-    parent_doc_type = models.CharField(max_length=10, choices=DOC_TYPE, blank=True)
-    parent_doc_no = models.CharField(max_length=10, blank=True)
-    student_doc_type = models.CharField(max_length=15, choices=DOC_TYPE, blank=True)
-    student_doc_no = models.CharField(max_length=15, blank=True)
+    parent_email = models.EmailField(max_length=30)
+    father_name = models.CharField(max_length=30, )
+    mother_name = models.CharField(max_length=30, )
+    father_occupation = models.CharField(max_length=30, )
+    mother_occupation = models.CharField(max_length=30, )
+    parent_doc_type = models.CharField(max_length=10, choices=DOC_TYPE, )
+    parent_doc_no = models.CharField(max_length=10, )
+    student_doc_type = models.CharField(max_length=15, choices=DOC_TYPE, )
+    student_doc_no = models.CharField(max_length=15, )
     student_pic = models.ImageField(upload_to=get_file_path, blank=True, null=True,
                                     validators=[FileExtensionValidator(allowed_extensions=['png', 'jpeg', 'jpg'])])
     parent_pic = models.ImageField(upload_to=get_file_path, blank=True, null=True,

@@ -5,10 +5,12 @@ from .models import Classes, Student
 class ClassesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classes
-        fields = '__all__'
+        fields = ['class_id', 'class_name']
 
 
 class StudentsSerializer(serializers.ModelSerializer):
+    classes = ClassesSerializer(many=False, read_only=True)
+
     class Meta:
         model = Student
         fields = '__all__'
