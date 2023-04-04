@@ -10,19 +10,31 @@ from .models import Teacher
 from .serializers import TeacherSerializer
 
 
-class TeacherViewSet(viewsets.ModelViewSet):
+class TeacherClassDetails(viewsets.ModelViewSet):
     serializer_class = TeacherSerializer
     queryset = Teacher
-
-    def list(self, request, *args, **kwargs):
-        queryset = Teacher.objects.all()
-        serializer = TeacherSerializer(queryset, many=True)
-        return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
         queryset = Teacher.objects.filter(teacher_id=pk)
         serializer = TeacherSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class TeacherView(APIView):
+
+    def get(self, request, pk=None):
+        if pk is None:
+            queryset = Teacher.objects.all()
+            serializer = TeacherSerializer(queryset, many=True)
+            return Response({'status': True,
+                             'message': 'teacher list',
+                             'data': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            queryset = Teacher.objects.get(teacher_id=pk)
+            serializer = TeacherSerializer(queryset)
+            return Response({'status': True,
+                             'message': 'teacher detail',
+                             'data': serializer.data}, status=status.HTTP_200_OK)
 
 
 class TeacherFileUploadAV(APIView):

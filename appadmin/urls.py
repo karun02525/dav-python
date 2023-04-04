@@ -1,11 +1,11 @@
 from django.urls import path, include
-from .views import AssignRollNoViewSet, UpdateRollNoView
+from .views import AssignRollNoView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'assign-rollno', AssignRollNoViewSet, basename='AssignRollNo')
+# router.register(r'assign-rollno', AssignRollNoViewSet, basename='AssignRollNo')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('update-rollno',  UpdateRollNoView.as_view()),
+    # path('', include(router.urls)),
+    path('update-rollno/<str:student_id>/', AssignRollNoView.as_view()),
 ]

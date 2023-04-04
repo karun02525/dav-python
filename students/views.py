@@ -14,6 +14,15 @@ import os
 # Create your views here.
 # queryset = TodoModel.objects.all().order_by('id')
 
+
+class StudentsFindByClass(APIView):
+
+    def get(self, request, class_id=None):
+        queryset = Student.objects.filter(classes_id=class_id)
+        serializer = StudentsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class ClassesViewSet(viewsets.ModelViewSet):
     serializer_class = ClassesSerializer
     queryset = Classes
@@ -47,25 +56,22 @@ class ClassesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class StudentsViewSet(viewsets.ModelViewSet):
+class StudentsView(APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
-    serializer_class = StudentsSerializer
-    queryset = Student
-
-    def list(self, request, *args, **kwargs):
-        queryset = Student.objects.all()
-        serializer = StudentsSerializer(queryset, many=True)
-        print('*************************', request.user)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Student.objects.get(student_id=pk)
-        serializer = StudentsSerializer(queryset)
-
-        return Response({'status': True,
-                         'message': 'student details successfully',
-                         'data': serializer.data}, status=status.HTTP_200_OK)
+    def get(self, request, pk=None):
+        if pk is None:
+            queryset = Student.objects.all()
+            serializer = StudentsSerializer(queryset, many=True)
+            return Response({'status': True,
+                             'message': 'students list',
+                             'data': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            queryset = Student.objects.get(student_id=pk)
+            serializer = StudentsSerializer(queryset)
+            return Response({'status': True,
+                             'message': 'student detail',
+                             'data': serializer.data}, status=status.HTTP_200_OK)
 
 
 class StudentFileUploadAV(APIView):

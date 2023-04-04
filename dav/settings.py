@@ -22,6 +22,7 @@ AUTH_USER_MODEL = 'authentication.User'
 INSTALLED_APPS = [
     'material',
     'material.admin',
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     'attendance',
     'authentication',
     'website',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -42,13 +44,13 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'dav.urls'
-
 
 TEMPLATES = [
     {
@@ -139,6 +141,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 EMAIL_USE_TLS = True
+
+
+CORS_ALLOW_ALL_ORIGINS: True
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=5),

@@ -15,6 +15,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth import authenticate
 from .renderers import UserRenderer
+from teacher.models import Teacher
+from teacher.serializers import TeacherSerializer
 from students.models import Student
 from students.serializers import StudentsSerializer
 
@@ -68,25 +70,27 @@ class UserLoginView(APIView):
         if user is not None:
             if user.user_verified:
                 token = get_tokens_for_user(user)
-                queryset = Student.objects.filter(parent_email=user.email)
-                serializer = StudentsSerializer(queryset, many=True)
-                student_data = serializer.data
+                if user.user_type == "parent":
+                    queryset = Student.objects.filter(parent_email=user.email)
+                    serializer = StudentsSerializer(queryset, many=True)
+                    return success_message(serializer.data, token)
 
-                payload = {'name': user.first_name + " " + user.last_name, 'email': user.email, 'mobile': user.mobile,
-                           'user_type': user.user_type, 'user_verified': user.user_verified},
-                return Response({'status': True,
-                                 'user_verified': True,
-                                 'message': 'login successfully',
-                                 'payload': payload,
-                                 'student': student_data,
-                                 'token': token},
-                                status=status.HTTP_200_OK)
+                if user.user_type == "teacher":
+                    queryset = Teacher.objects.get(email=user.email)
+                    serializer = TeacherSerializer(queryset)
+                    return success_message(serializer.data, token)
+
             else:
                 return Response({'status': True, 'message': 'your account has been de-activated please contact admin',
                                  'user_verified': False}, status=status.HTTP_200_OK)
         else:
             return Response({'errors': {'non_field_errors': ['Email or password is not valid']}},
                             status=status.HTTP_404_NOT_FOUND)
+
+
+def success_message(data, token):
+    return Response({'status': True, 'user_verified': True, 'message': 'login successfully', 'data': data,
+                     'token': token}, status=status.HTTP_200_OK)
 
 
 class UserLogoutView(APIView):
